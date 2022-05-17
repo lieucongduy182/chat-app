@@ -12,23 +12,31 @@
                 autocomplete="off"
             >
                 <a-form-item label="Email" name="email">
-                    <a-input />
-                </a-form-item>
+                   <a-input v-model:value="email" />
+                </a-form-item> 
                 <a-form-item label="Username" name="username">
-                    <a-input />
+                    <a-input v-model:value="name" />
                 </a-form-item>
 
                 <a-form-item label="Password" name="password">
-                    <a-input-password />
+                    <a-input-password v-model:value="password" />
                 </a-form-item>
 
                 <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-                    <a-button type="primary">Submit</a-button>
+                    <a-button
+                        type="primary"
+                        @click="SignUp"
+                        :loading="isLoading"
+                        >Submit</a-button
+                    >
                 </a-form-item>
                 <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-                    <router-link :to="{name: 'home'}">
-                        Login App
-                    </router-link>
+                    <p class="font-semibold">
+                        Already account ?
+                        <router-link :to="{ name: 'login' }">
+                            Login app
+                        </router-link>
+                    </p>
                 </a-form-item>
             </a-form>
         </a-card>
@@ -36,7 +44,68 @@
 </template>
 
 <script>
-export default {};
+import firebase from '../services/firebase';
+import { notification } from 'ant-design-vue';
+export default {
+    data() {
+        return {
+            email: '',
+            name: '',
+            password: '',
+            isLoading: false,
+        };
+    },
+    methods: {
+        SignUp(e) {
+            e.preventDefault();
+            this.isLoading = true;
+            const auth = firebase.auth();
+            const name = this.name;
+            const password = this.password;
+            const email = this.email;
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(async (res) => {
+                    console.log('res', res);
+                    await firebase
+                        .firestore()
+                        .collection('users')
+                        .add({
+                            email,
+                            name,
+                            password,
+                            id: res.user.uid,
+                            url: '',
+                            description: '',
+                        })
+                        .then((ref) => {
+                            localStorage.setItem('id', res.user.uid);
+                            localStorage.setItem('name', name);
+                            localStorage.setItem('email', email);
+                            localStorage.setItem('password', password);
+                            localStorage.setItem('FirebaseDocumentId', ref.id);
+                            this.name = '';
+                            this.password = '';
+                            this.email = '';
+                        })
+                        .catch((err) => console.log('err', err));
+                    notification.success({
+                        description: 'Register Successfully',
+                    });
+                    this.isLoading = false;
+                    setTimeout(() => {
+                        this.$router.push('/login');
+                    }, 1000);
+                })
+                .catch((err) => {
+                    console.log('err', err);
+                    notification.error({
+                        description: 'Login Error !',
+                    });
+                    this.isLoading = false;
+                });
+        },
+    },
+};
 </script>
 
 <style></style>
