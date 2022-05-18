@@ -2,13 +2,13 @@
     <div style="padding: 30px; max-width: 500px" class="m-auto">
         <a-card>
             <h2 class="text-center font-semibold text-2xl text-cyan-500">
-                Create An Account
+                Create an Account
             </h2>
             <br />
             <a-form
                 name="basic"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
+                :label-col="{ span: 5 }"
+                :wrapper-col="{ span: 20 }"
                 autocomplete="off"
             >
                 <a-form-item label="Email" name="email">

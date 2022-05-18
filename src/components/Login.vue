@@ -7,8 +7,8 @@
             <br />
             <a-form
                 name="basic"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
+                :label-col="{ span: 5 }"
+                :wrapper-col="{ span: 20 }"
                 autocomplete="off"
             >
                 <a-form-item label="Email" name="email">
@@ -57,6 +57,7 @@ export default {
             const auth = firebase.auth();
             auth.signInWithEmailAndPassword(email, password)
                 .then(async (res) => {
+                    console.log(res.user);
                     if (res.user) {
                         await firebase
                             .firestore()
@@ -64,9 +65,9 @@ export default {
                             .where('id', '==', res.user.uid)
                             .get()
                             .then((querySnapshot) => {
-                                // console.log('q', querySnapshot);
+                                console.log('q', querySnapshot);
                                 querySnapshot.forEach((doc) => {
-                                    console.log(doc);
+                                    console.log(doc.data());
                                     let userData = doc.data();
                                     localStorage.setItem('id', userData.id);
                                     localStorage.setItem('name', userData.name);
@@ -84,6 +85,9 @@ export default {
                                         doc.id
                                     );
                                 });
+                                setTimeout(() => {
+                                    this.$router.push('/chat');
+                                }, 1000);
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -92,9 +96,6 @@ export default {
                             description: 'Login Successfully !',
                         });
                         this.isLoading = false;
-                        setTimeout(() => {
-                            this.$router.push('/chat');
-                        }, 1000);
                     }
                 })
                 .catch((err) => {
