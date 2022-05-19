@@ -1,22 +1,162 @@
 <template>
-    <div>
-      chat
-      
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+    <a-layout has-sider>
+        <!-- Sider -->
+        <a-layout-sider
+            :style="{
+                overflow: 'auto',
+                height: '100vh',
+                position: 'fixed',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                minWidth: 300,
+            }"
         >
-            <path
-                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-            />
-        </svg>
-    </div>
+            <a-menu theme="dark" mode="inline">
+                <div class="flex justify-between p-4 border-b-2">
+                    <a-avatar
+                        size="large"
+                        :src="currentUrl"
+                        @click="profile"
+                        class="hover:cursor-pointer"
+                        alt="currentUserName"
+                    />
+                    <a-button type="primary" size="small" @click="logOut"
+                        >Log out</a-button
+                    >
+                </div>
+                <div
+                    v-for="item in listUser"
+                    :key="item.id"
+                    v-show="item.id != currentUserId"
+                    @click="letChat(item)"
+                >
+                    <div class="p-2 flex border-b-2">
+                        <a-menu-item :key="item.key">
+                            <a-avatar :src="item.url" />
+                            <span class="nav-text ml-8 text-sm text-gray-200">{{
+                                item.name
+                            }}</span>
+                        </a-menu-item>
+                    </div>
+                </div>
+            </a-menu>
+        </a-layout-sider>
+        <!-- Content -->
+        <a-layout :style="{ marginLeft: '200px' }">
+            <a-layout-content :style="{ overflow: 'initial' }">
+                <div
+                    :style="{
+                        padding: '24px',
+                        background: '#fff',
+                        textAlign: 'center',
+                        height: '100vh',
+                    }"
+                >
+                    <div
+                        class="mx-auto justify-content"
+                        v-if="currentPeerUser === null"
+                    >
+                        <a-avatar
+                            :src="currentUrl"
+                            :size="{
+                                xs: 64,
+                                sm: 80,
+                                md: 100,
+                                lg: 150,
+                                xl: 200,
+                            }"
+                        />
+                        <h2
+                            class="md:text-2xl lg:text-4xl text-orange-400 pt-4"
+                        >
+                            Hi, {{ currentUserName }}
+                        </h2>
+                        <p class="md:text-xl lg:text-2xl pt-4">
+                            {{ currentUserDescription }}
+                        </p>
+                    </div>
+                    <div v-else>
+                        <ChatBox :currentPeerUser="currentPeerUser" />
+                    </div>
+                </div>
+            </a-layout-content>
+        </a-layout>
+    </a-layout>
 </template>
-
 <script>
-export default {};
+import ChatBox from '@/components/ChatBox.vue';
+import firebase from '@/services/firebase';
+export default {
+    components: {
+        ChatBox,
+    },
+    data() {
+        return {
+            currentPeerUser: null,
+            currentUserName: localStorage.getItem('name'),
+            currentUserId: localStorage.getItem('id'),
+            currentUserDescription: localStorage.getItem('description'),
+            currentUrl: localStorage.getItem('url'),
+            listUser: [],
+        };
+    },
+    methods: {
+        profile() {
+            this.$router.push('/profile');
+        },
+        logOut() {
+            firebase.auth().signOut();
+            localStorage.clear();
+            this.$router.push('/');
+        },
+        letChat(item) {
+            this.currentPeerUser = item;
+        },
+        async getListUser() {
+            await firebase
+                .firestore()
+                .collection('users')
+                .get()
+                .then((query) => {
+                    console.log('querySnapshot', query);
+                    if (query.docs.length > 0) {
+                        let users = [...query.docs];
+                        users.forEach((user, index) => {
+                            console.log(user.data());
+                            this.listUser.push({
+                                key: index,
+                                firebaseDocumentId: user.id,
+                                id: user.data().id,
+                                name: user.data().name,
+                                description: user.data().description,
+                                url: user.data().url,
+                            });
+                        });
+                    }
+                });
+        },
+    },
+    created() {
+        if (localStorage.getItem('id') == null) {
+            this.$router.push('/');
+        } else {
+            this.getListUser();
+        }
+    },
+};
 </script>
+<style>
+#components-layout-demo-fixed-sider .logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+}
+.site-layout .site-layout-background {
+    background: #fff;
+}
 
-<style></style>
+[data-theme='dark'] .site-layout .site-layout-background {
+    background: #141414;
+}
+</style>

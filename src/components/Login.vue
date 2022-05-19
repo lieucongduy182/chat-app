@@ -10,6 +10,7 @@
                 :label-col="{ span: 5 }"
                 :wrapper-col="{ span: 20 }"
                 autocomplete="off"
+                @keyup.enter="Login"
             >
                 <a-form-item label="Email" name="email">
                     <a-input v-model:value="email" />
