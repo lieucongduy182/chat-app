@@ -9,7 +9,6 @@
                 left: 0,
                 top: 0,
                 bottom: 0,
-                minWidth: 300,
             }"
         >
             <a-menu theme="dark" mode="inline">
@@ -158,5 +157,8 @@ export default {
 
 [data-theme='dark'] .site-layout .site-layout-background {
     background: #141414;
+}
+.ant-layout-sider.ant-layout-sider-dark {
+    min-width: 15% !important
 }
 </style>
