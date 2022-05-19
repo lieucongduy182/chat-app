@@ -5,7 +5,7 @@
         </h1>
         <div class="relative w-36 h-36 m-auto outline rounded-md">
             <img :src="this.url" class="object-cover w-36 h-36" alt="avatar" />
-            <div class="absolute bottom-0 right-0 h-5">
+            <div class="absolute bottom-0 right-0">
                 <input
                     type="file"
                     name="upload"

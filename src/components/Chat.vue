@@ -30,14 +30,18 @@
                     v-show="item.id != currentUserId"
                     @click="letChat(item)"
                 >
-                    <div class="p-2 flex border-b-2">
+                    <div class="p-2 flex">
                         <a-menu-item :key="item.key">
-                            <a-avatar :src="item.url" />
-                            <span class="nav-text ml-8 text-sm text-gray-200">{{
-                                item.name
-                            }}</span>
+                            
+                                <a-avatar :src="item.url" />
+                                <span
+                                    class="nav-text ml-8 text-sm text-gray-200"
+                                    >{{ item.name }}</span
+                                >
+                            
                         </a-menu-item>
                     </div>
+                    <hr />
                 </div>
             </a-menu>
         </a-layout-sider>
@@ -159,6 +163,6 @@ export default {
     background: #141414;
 }
 .ant-layout-sider.ant-layout-sider-dark {
-    min-width: 15% !important
+    min-width: 15% !important;
 }
 </style>

@@ -22,7 +22,6 @@
 
                 <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
                     <a-button type="primary" @click="Login" :loading="isLoading"
-                        class="bg-blue-500"
                         >Submit</a-button
                     >
                 </a-form-item>
