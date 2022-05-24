@@ -28,17 +28,13 @@
                     v-for="item in listUser"
                     :key="item.id"
                     v-show="item.id != currentUserId"
-                    @click="letChat(item)"
                 >
                     <div class="p-2 flex">
-                        <a-menu-item :key="item.key">
-                            
-                                <a-avatar :src="item.url" />
-                                <span
-                                    class="nav-text ml-8 text-sm text-gray-200"
-                                    >{{ item.name }}</span
-                                >
-                            
+                        <a-menu-item :key="item.key" @click="letChat(item)">
+                            <a-avatar :src="item.url" />
+                            <span class="nav-text ml-8 text-sm text-gray-200">{{
+                                item.name
+                            }}</span>
                         </a-menu-item>
                     </div>
                     <hr />
@@ -46,18 +42,16 @@
             </a-menu>
         </a-layout-sider>
         <!-- Content -->
-        <a-layout :style="{ marginLeft: '200px' }">
+        <a-layout :style="{ marginLeft: '250px' }">
             <a-layout-content :style="{ overflow: 'initial' }">
                 <div
                     :style="{
-                        padding: '24px',
                         background: '#fff',
-                        textAlign: 'center',
                         height: '100vh',
                     }"
                 >
                     <div
-                        class="mx-auto justify-content"
+                        class="mx-auto justify-content text-center"
                         v-if="currentPeerUser === null"
                     >
                         <a-avatar
@@ -122,11 +116,11 @@ export default {
                 .collection('users')
                 .get()
                 .then((query) => {
-                    console.log('querySnapshot', query);
+                    // console.log('querySnapshot', query);
                     if (query.docs.length > 0) {
                         let users = [...query.docs];
                         users.forEach((user, index) => {
-                            console.log(user.data());
+                            // console.log(user.data());
                             this.listUser.push({
                                 key: index,
                                 firebaseDocumentId: user.id,
@@ -163,6 +157,6 @@ export default {
     background: #141414;
 }
 .ant-layout-sider.ant-layout-sider-dark {
-    min-width: 15% !important;
+    min-width: 250px !important;
 }
 </style>

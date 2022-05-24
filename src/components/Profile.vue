@@ -1,11 +1,14 @@
 <template>
     <div class="mx-auto mt-2 container relative">
         <h1 class="text-2xl font-semibold text-center text-orange-600 mb-4">
-            Welcome to Profile Section
+            Profile Section
         </h1>
         <div class="relative w-36 h-36 m-auto outline rounded-md">
             <img :src="this.url" class="object-cover w-36 h-36" alt="avatar" />
-            <div class="absolute bottom-0 right-0">
+            <div
+                class="absolute bottom-0 right-0"
+                @click="$refs.fileInput.click()"
+            >
                 <input
                     type="file"
                     name="upload"
@@ -13,23 +16,7 @@
                     @change="changeAvatar"
                     ref="fileInput"
                 />
-                <button @click="$refs.fileInput.click()">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path
-                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"
-                        />
-                        <path
-                            fill-rule="evenodd"
-                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                </button>
+                <EditFilled :style="{ fontSize: '16px' }" class="hover:cursor-pointer"/>
             </div>
         </div>
         <div class="p-8 max-w-lg mx-auto">
@@ -66,7 +53,11 @@
 <script>
 import firebase from '@/services/firebase';
 import { notification } from 'ant-design-vue';
+import { EditFilled } from '@ant-design/icons-vue';
 export default {
+    components: {
+        EditFilled,
+    },
     data() {
         return {
             isLoading: false,
